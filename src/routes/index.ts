@@ -1,17 +1,21 @@
-import { Type } from '@sinclair/typebox';
+import { Static, Type } from '@sinclair/typebox';
 import { FastifyPluginAsync } from 'fastify';
 
+const IndexResponse = Type.Object({
+  hello: Type.String(),
+})
+
+type Index = Static<typeof IndexResponse>
+
 const routes: FastifyPluginAsync = async (server) => {
-  server.get('/', {
-   schema: {
+  server.get<{ Body: Index }>('/', {
+    schema: {
       response: {
-        200: Type.Object({
-          hello: Type.String(),
-        }),
+        200: IndexResponse
       },
-    }, 
+    },
   }, async function () {
-    return { hello: 'world' };
+    return { po: 'world' };
   });
 }
 

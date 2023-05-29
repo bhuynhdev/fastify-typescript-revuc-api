@@ -16,6 +16,7 @@ const ConfigSchema = Type.Strict(
     LOG_LEVEL: Type.String(),
     API_HOST: Type.String(),
     API_PORT: Type.String(),
+    DATABASE_ENV: Type.String()
   })
 );
 
@@ -35,7 +36,7 @@ const configPlugin: FastifyPluginAsync = async (server) => {
   if (!valid) {
     throw new Error(
       ".env file validation failed - " +
-        JSON.stringify(validate.errors, null, 2)
+      JSON.stringify(validate.errors, null, 2)
     );
   }
   server.decorate("config", process.env);
