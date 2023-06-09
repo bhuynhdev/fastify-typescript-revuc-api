@@ -1,6 +1,6 @@
 {
-  "name": "fastify-typescript-starter",
-  "version": "1.5.0",
+  "name": "fastify-typescript-revuc-api",
+  "version": "1.0.0",
   "description": "Node.js boilerplate using fastify & TypeScript",
   "type": "module",
   "scripts": {
@@ -15,6 +15,9 @@
     "test": "vitest",
     "test:watch": "vitest -w"
   },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yonathan06/fastify-typescript-starter.git"
@@ -27,7 +30,7 @@
     "fastify",
     "typescript"
   ],
-  "author": "Yonatan Bendahan",
+  "author": "Bao Huynh",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/yonathan06/fastify-typescript-starter/issues"
@@ -35,19 +38,20 @@
   "homepage": "https://github.com/yonathan06/fastify-typescript-starter#readme",
   "dependencies": {
     "@sinclair/typebox": "^0.23.5",
+    "@prisma/client": "4.15.0",
     "ajv": "^8.11.2",
+    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
-    "drizzle-orm": "^0.26.2",
     "env-schema": "^5.1.1",
     "fastify": "^4.10.2",
     "fastify-plugin": "^3.0.1",
     "mysql2": "^3.3.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/node": "^18.11.15",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
-    "drizzle-kit": "^0.18.1",
     "esbuild": "^0.14.54",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",

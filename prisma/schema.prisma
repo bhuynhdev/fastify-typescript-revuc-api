@@ -6,6 +6,102 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+enum Role {
+  HACKER
+  JUDGE
+  SPONSOR
+}
+
+enum Gender {
+  Male
+  Female
+  Nonbinary
+  Other
+  PreferNot
+}
+
+enum Ethinicity {
+  Indian
+  Asian
+  Black
+  Islander
+  White
+  Latino
+  PreferNot
+}
+
+enum ShirtSize {
+  XSmall
+  Small
+  Medium
+  Large
+  XLarge
+  XXLarge
+}
+
+model Person {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  firstName String
+  lastName  String
+  checkedIn Boolean  @default(false)
+  isMinor   Boolean  @default(false)
+  role      Role
+  hacker    Hacker?
+  judge     Judge?
+  sponsor   Sponsor?
+}
+
+model Hacker {
+  id            String     @id
+  firstName     String
+  lastName      String
+  email         String     @unique
+  emailVerified Boolean
+  personalInfo  Person     @relation(fields: [id], references: [id])
+  phone         String
+  school        String
+  country       String
+  major         String
+  gender        Gender
+  ethnicities   Ethinicity
+  shirtSize     ShirtSize
+  HowHeard      HowHeard[]
+
+  @@index([id])
+}
+
+model HowHeard {
+  id       String @id @default(uuid())
+  reason   String
+  hacker   Hacker @relation(fields: [hackerId], references: [id])
+  hackerId String
+}
+
+model Judge {
+  id           String  @id
+  personalInfo Person  @relation(fields: [id], references: [id])
+  password     String
+  company      String?
+
+  @@index([id])
+}
+
+model Sponsor {
+  id           String @id
+  personalInfo Person @relation(fields: [id], references: [id])
+  company      String
+
+  @@index([id])
+}
+
+model Admin {
+  id String @id @default(uuid())
+  username String @unique
+  password String
 }
