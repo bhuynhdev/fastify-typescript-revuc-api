@@ -44,13 +44,11 @@ enum ShirtSize {
   XXLarge
 }
 
-model Person {
+model AuthRecord {
   id        String   @id @default(uuid())
   email     String   @unique
-  firstName String
-  lastName  String
+  password  String?  @default("SENTIENT_VALUE")
   checkedIn Boolean  @default(false)
-  isMinor   Boolean  @default(false)
   role      Role
   hacker    Hacker?
   judge     Judge?
@@ -59,19 +57,21 @@ model Person {
 
 model Hacker {
   id            String     @id
+  auth          AuthRecord @relation(fields: [id], references: [id])
   firstName     String
   lastName      String
   email         String     @unique
-  emailVerified Boolean
-  personalInfo  Person     @relation(fields: [id], references: [id])
+  emailVerified Boolean    @default(false)
   phone         String
+  birthDate     String
   school        String
   country       String
   major         String
   gender        Gender
-  ethnicities   Ethinicity
+  ethnicities   String
   shirtSize     ShirtSize
-  HowHeard      HowHeard[]
+  howHeard      HowHeard[]
+  isMinor       Boolean    @default(false)
 
   @@index([id])
 }
@@ -79,29 +79,32 @@ model Hacker {
 model HowHeard {
   id       String @id @default(uuid())
   reason   String
-  hacker   Hacker @relation(fields: [hackerId], references: [id])
   hackerId String
+  hacker   Hacker @relation(fields: [hackerId], references: [id])
+
+  @@index([hackerId])
 }
 
 model Judge {
-  id           String  @id
-  personalInfo Person  @relation(fields: [id], references: [id])
-  password     String
-  company      String?
+  id      String     @id
+  auth    AuthRecord @relation(fields: [id], references: [id])
+  name    String
+  company String?
 
   @@index([id])
 }
 
 model Sponsor {
-  id           String @id
-  personalInfo Person @relation(fields: [id], references: [id])
-  company      String
+  id       String     @id
+  identity AuthRecord @relation(fields: [id], references: [id])
+  name     String
+  company  String
 
   @@index([id])
 }
 
 model Admin {
-  id String @id @default(uuid())
+  id       String @id @default(uuid())
   username String @unique
   password String
 }

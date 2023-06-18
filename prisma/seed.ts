@@ -22,8 +22,42 @@ async function seedAdmin() {
   console.log(`Seeding amdin finished.`)
 }
 
+async function seedHackers() {
+  const hackerSeed: Prisma.HackerCreateInput[] = [{
+    email: "hacker@test.com",
+    birthDate: "01/01/1980",
+    country: 'US',
+    ethnicities: "Asian",
+    gender: "PreferNot",
+    firstName: "Test",
+    lastName: "Hacker",
+    major: "Computer Science",
+    phone: "1112223333",
+    emailVerified: false,
+    school: "University of Cincinnati",
+    shirtSize: "Large",
+    auth: {
+      create: {
+        email: "hacker@test.com",
+        role: "HACKER",
+      }
+    }
+  }]
+
+  for (const h of hackerSeed) {
+    const created = await prisma.hacker.upsert({
+      where: { email: h.email },
+      update: h,
+      create: h
+    })
+    console.log(`Created hacker with id: ${created.id}`)
+  }
+  console.log(`Seeding hacker finished.`)
+}
+
 async function main() {
-  await seedAdmin()
+  await seedAdmin();
+  await seedHackers();
 }
 
 main()
