@@ -1,0 +1,7 @@
+### Get list of hackers
+GET http://localhost:5050/hacker HTTP/1.1
+content-type: application/json
+
+### Get single hacker
+GET http://localhost:5050/hacker/5ecff5da-36c6-4993-a528-c7daad734e2c HTTP/1.1
+content-type: application/json

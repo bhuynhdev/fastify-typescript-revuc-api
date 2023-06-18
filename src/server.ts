@@ -17,17 +17,24 @@ const server = fastify({
 }).withTypeProvider<TypeBoxTypeProvider>();
 
 await server.register(config);
+
+
+/**
+ * CORS
+ */
+await server.register(import('@fastify/cors'), { origin: true, credentials: true })
+
+/**
+ * SWAGGER
+ */
 await server.register(import('@fastify/swagger'), {
-  swagger: {
+  openapi: {
     info: {
-      title: 'Test swagger',
-      description: 'testing the fastify swagger api',
+      title: 'RevolutionUC API',
+      description: 'OpenAPI documentation for RevUC API',
       version: '0.1.0'
     },
-    host: 'localhost:5050',
-    schemes: ['http'],
-    consumes: ['application/json'],
-    produces: ['application/json']
+    servers: [{ url: 'http://localhost:5050' }]
   },
 });
 await server.register(import('@fastify/swagger-ui'), {
@@ -36,9 +43,16 @@ await server.register(import('@fastify/swagger-ui'), {
     docExpansion: 'full',
     deepLinking: false
   },
+  theme: {
+    title: "RevUC API"
+  },
   staticCSP: true,
   transformSpecificationClone: true
 })
+
+/**
+ * ROUTES
+ */
 await server.register(routes)
 
 
