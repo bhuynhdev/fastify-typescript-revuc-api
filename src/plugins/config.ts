@@ -16,7 +16,8 @@ const ConfigSchema = Type.Strict(
     LOG_LEVEL: Type.String(),
     API_HOST: Type.String(),
     API_PORT: Type.String(),
-    DATABASE_URL: Type.String()
+    DATABASE_URL: Type.String(),
+    HACKATHON_DATE: Type.String()
   })
 );
 

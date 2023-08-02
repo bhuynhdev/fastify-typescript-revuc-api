@@ -7,7 +7,7 @@ const server = fastify({
   ajv: {
     customOptions: {
       verbose: true,
-      keywords: ["explode", "encoding", "collectionFormat"] // Add support for Multipart body encoding: https://swagger.io/docs/specification/describing-request-body/multipart-requests/
+      keywords: ["explode", "encoding", "collectionFormat"] // Support for Multipart body encoding: https://swagger.io/docs/specification/describing-request-body/multipart-requests/
     },
   },
   logger: {
@@ -34,14 +34,14 @@ await server.register(import('@fastify/multipart'), { attachFieldsToBody: "keyVa
  * SWAGGER
  */
 await server.register(import('@fastify/swagger'), {
-  swagger: {
+  openapi: {
+    openapi: "3.1.0",
     info: {
       title: 'RevolutionUC API',
       description: 'OpenAPI documentation for RevUC API',
       version: '0.1.0'
     },
-    schemes: ['http'],
-    host: 'localhost:5050'
+    servers: [{ url: 'http://localhost:5050' }]
   }
 });
 await server.register(import('@fastify/swagger-ui'), {

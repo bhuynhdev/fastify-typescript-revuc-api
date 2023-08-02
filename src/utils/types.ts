@@ -41,6 +41,6 @@ export const HackerResponseDto = t.Composite([
       role: t.Union([t.Literal('HACKER'), t.Literal('SPONSOR'), t.Literal('JUDGE')]),
     })
   }),
-], { additionalProperties: false }); // Setting additionalProperties to "false" to prevent leakage of any field not defined in this schema, e.g. "password"
+], { additionalProperties: false }); // Set additionalProperties "false" to prevent leakage of fields not defined in schema, e.g. "password"
 
 export const HackerCreateDto = t.Omit(HackerBaseObject, ['id', 'emailVerified', 'isMinor']);
