@@ -1,28 +1,15 @@
 # Node.js starter using Fastify & TypeScript
 
-![ci badge](https://github.com/yonathan06/fastify-typescript-boilerplate/workflows/CI/badge.svg)
-[![Sync Vulnerabilities Status](https://app.snyk.io/test/github/yonathan06/fastify-typescript-boilerplate/badge.svg)](https://snyk.io/test/github/yonathan06/fastify-typescript-boilerplate)
+## Included in the codebase
 
-Create a new server:
-```bash
-pnpx degit yonathan06/fastify-typescript-starter my-server
-```
-or `npx`.
-
-See [degit](https://github.com/Rich-Harris/degit) docs for detailed explaination 
-
-## Included in the boilerplate
-
-- TypeScript (using esbuild for fast compilation, and tsx for development)
+- TypeScript (using swc for fast compilation, and tsx for development)
 - Env vars
-- Tests (using Vitest)
 - Fastify
 - CI with github actions
 - Docker image
 - Linting
+- Prisma for database
 - ESM (can be opt out by changing the tsconfig: https://www.typescriptlang.org/docs/handbook/esm-node.html)
-
-**BYODB - Bring your own database** - no database connection included
 
 ## Set Up
 
@@ -31,24 +18,17 @@ See [degit](https://github.com/Rich-Harris/degit) docs for detailed explaination
 ```bash
 pnpm install
 ```
-
-or npm/yarn
-
 - Start the server in development mode.
 
 ```bash
 pnpm dev
 ```
 
-or npm/yarn
-
 ## Env vars
 
-Loaded from `.env` file, with schema validation
+Loaded from `.env` file, with schema validation through the `plugin/config.ts` file
 
-## Backend API Development
-
-There are a number of handy commands you can run to help with development.
+## NPM commands
 
 |Command | Action |
 |---|---|
@@ -68,4 +48,29 @@ Check `.github/workflows/CI.yml`
 ## Recommended Vscode Extensions
 
 [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
 [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+
+## Modules and Domains
+1. Adminstrator
+- Search and filter hacker
+- Update hacker info: Name, email, check-in status
+
+2. Discord
+- Find soneone roles by email
+- Check-in anyone by email
+
+3. Registration page
+- Add new hacker
+- Verify email
+
+4. Email sending
+- Send email to hacker; filter before send
+
+5. Judging
+- Add new judge
+- Add projects CSV
+- Add/update project categories
+- Change judge info: category, name, email
+- Send email to judge: login link
+- Distribute projects to judges

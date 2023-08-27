@@ -1,8 +1,8 @@
-import { Static, Type as t } from '@sinclair/typebox';
+import { Static as S, Type as t } from '@sinclair/typebox';
 import { type FastifyPluginAsync } from 'fastify';
 import { prisma } from 'utils/db';
 import { getAgeOfHacker } from 'utils/misc';
-import { HackerCreateDto, HackerResponseDto } from 'utils/types';
+import { HackerCreateDto, HackerResponseDto, HackerUpdateDto } from 'utils/types';
 
 const ParamsWithId = t.Object({ id: t.String() });
 
@@ -17,7 +17,8 @@ const routes: FastifyPluginAsync = async (fastify) => {
    * Get list of hackers, with filtering options
    */
   const GetHackersReply = t.Array(HackerResponseDto);
-  fastify.get<{ Reply: Static<typeof GetHackersReply> }>('/', {
+  fastify.get<{ Reply: S<typeof GetHackersReply> }>(
+    '/', {
     schema: {
       description: 'Query and filter multiple hackers',
       tags: ['Hacker'],
@@ -49,7 +50,8 @@ const routes: FastifyPluginAsync = async (fastify) => {
    * Get single hacker by id
    */
   const GetHackerByIdReply = t.Union([HackerResponseDto, t.Null()]);
-  fastify.get<{ Reply: Static<typeof GetHackerByIdReply>; Params: Static<typeof ParamsWithId> }>('/:id', {
+  fastify.get<{ Reply: S<typeof GetHackerByIdReply>; Params: S<typeof ParamsWithId> }>(
+    '/:id', {
     schema: {
       description: 'Get a hacker from id',
       tags: ['Hacker'],
@@ -74,11 +76,53 @@ const routes: FastifyPluginAsync = async (fastify) => {
   );
 
   /**
+   * Update hacker info. Currently only allow update email, name, email verfied status, and check-in status
+   */
+  fastify.patch<{ Params: S<typeof ParamsWithId>, Body: S<typeof HackerUpdateDto>, Reply: S<typeof HackerResponseDto> }>(
+    '/:id', {
+    schema: {
+      description: 'Update info of specific hacker id',
+      tags: ['Hacker'],
+      body: HackerUpdateDto,
+      response: {
+        200: HackerResponseDto
+      }
+    },
+  },
+    async function (request, reply) {
+      // undefined means "do nothing" in prisma
+      const updatedHacker = await prisma.hacker.update({
+        where: {
+          id: request.params.id,
+        },
+        data: {
+          firstName: request.body.firstName || undefined, // Use || instead of ?? to account for empty strings
+          lastName: request.body.firstName || undefined,
+          auth: {
+            update: {
+              email: request.body.email ?? undefined,
+              checkedIn: request.body.checkedIn ?? undefined,
+              emailVerified: request.body.emailVerified ?? undefined
+            }
+          },
+        },
+        include: { howHeard: true, auth: true }
+      });
+      // Flatten the howHeard field
+      let toReturn = null;
+      toReturn = { ...updatedHacker, howHeard: updatedHacker.howHeard.map(({ reason }) => reason) };
+      return reply.code(201).send(toReturn);
+    },
+  );
+
+  /**
    * Register new hacker
    */
-  fastify.post<{ Body: Static<typeof HackerCreateDto>, Reply: Static<typeof HackerResponseDto> }>('/', {
+  fastify.post<{ Body: S<typeof HackerCreateDto>, Reply: S<typeof HackerResponseDto> }>('/', {
     schema: {
+      description: "Register new hacker, through form-data submission",
       consumes: ['multipart/form-data'],
+      tags: ['Hacker'],
       body: HackerCreateDto,
       response: {
         201: HackerResponseDto

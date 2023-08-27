@@ -4,8 +4,8 @@
   "description": "Node.js boilerplate using fastify & TypeScript",
   "type": "module",
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix",
     "check:types": "tsc --noEmit",
     "build": "pnpm exec swc ./src -d build",
     "build:docker:prod": "docker build . -t my-fastify-app --build-arg APP_ENV=production",

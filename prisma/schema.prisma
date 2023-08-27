@@ -45,33 +45,32 @@ enum ShirtSize {
 }
 
 model AuthRecord {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String?  @default("SENTIENT_VALUE")
-  checkedIn Boolean  @default(false)
-  role      Role
-  hacker    Hacker?
-  judge     Judge?
-  sponsor   Sponsor?
+  id            String   @id @default(uuid())
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  password      String?  @default("SENTIENT_VALUE")
+  checkedIn     Boolean  @default(false)
+  role          Role
+  hacker        Hacker?
+  judge         Judge?
+  sponsor       Sponsor?
 }
 
 model Hacker {
-  id            String     @id
-  auth          AuthRecord @relation(fields: [id], references: [id])
-  firstName     String
-  lastName      String
-  email         String     @unique
-  emailVerified Boolean    @default(false)
-  phone         String
-  birthDate     String
-  school        String
-  country       String
-  major         String
-  gender        Gender
-  ethnicities   String
-  shirtSize     ShirtSize
-  howHeard      HowHeard[]
-  isMinor       Boolean    @default(false)
+  id          String     @id
+  auth        AuthRecord @relation(fields: [id], references: [id])
+  firstName   String
+  lastName    String
+  phone       String
+  birthDate   String
+  school      String
+  country     String
+  major       String
+  gender      Gender
+  ethnicities String
+  shirtSize   ShirtSize
+  howHeard    HowHeard[]
+  isMinor     Boolean    @default(false)
 
   @@index([id])
 }
