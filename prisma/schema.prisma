@@ -6,9 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  relationMode = "foreignKeys"
 }
 
 enum Role {
@@ -69,19 +69,10 @@ model Hacker {
   gender      Gender
   ethnicities String
   shirtSize   ShirtSize
-  howHeard    HowHeard[]
+  howHeard    String[]   @default([])
   isMinor     Boolean    @default(false)
 
   @@index([id])
-}
-
-model HowHeard {
-  id       String @id @default(uuid())
-  reason   String
-  hackerId String
-  hacker   Hacker @relation(fields: [hackerId], references: [id])
-
-  @@index([hackerId])
 }
 
 model Judge {
@@ -95,10 +86,10 @@ model Judge {
 }
 
 model Sponsor {
-  id       String     @id
-  auth AuthRecord @relation(fields: [id], references: [id])
-  name     String
-  company  String
+  id      String     @id
+  auth    AuthRecord @relation(fields: [id], references: [id])
+  name    String
+  company String
 
   @@index([id])
 }

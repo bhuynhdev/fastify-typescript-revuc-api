@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client'
+import { AuthRecord, Hacker, Prisma, PrismaClient } from '@prisma/client'
 import bcrypt from "bcrypt"
 
 const prisma = new PrismaClient()
@@ -7,7 +7,7 @@ async function seedAdmin() {
   const adminSeed: Prisma.AdminCreateInput[] = [
     {
       username: "acmatuc",
-      password: await bcrypt.hash("Pa55w_rd", 10)
+      password: await bcrypt.hash("Seed_Pa55w_rd", 10)
     },
   ]
   console.log(`Start seeding admin...`)
@@ -23,8 +23,8 @@ async function seedAdmin() {
 }
 
 async function seedHackers() {
-  const hackerSeed: Prisma.HackerCreateInput[] = [{
-    email: "hacker@test.com",
+  type HackerSeed = Omit<Hacker, "id" | "isMinor"> & { auth: Omit<AuthRecord, "id" | "password"> }
+  const hackerSeeds: HackerSeed[] = [{
     birthDate: "01/01/1980",
     country: 'US',
     ethnicities: "Asian",
@@ -33,22 +33,25 @@ async function seedHackers() {
     lastName: "Hacker",
     major: "Computer Science",
     phone: "1112223333",
-    emailVerified: false,
     school: "University of Cincinnati",
     shirtSize: "Large",
+    howHeard: [],
     auth: {
-      create: {
-        email: "hacker@test.com",
-        role: "HACKER",
-      }
+      email: "hacker@test.com",
+      role: "HACKER",
+      emailVerified: false,
+      checkedIn: false
     }
   }]
 
-  for (const h of hackerSeed) {
+  for (const h of hackerSeeds) {
+    // Find if hacker exists yet
+    const authRecord = await prisma.authRecord.findFirst({ where: { email: h.auth?.email } })
+
     const created = await prisma.hacker.upsert({
-      where: { email: h.email },
-      update: h,
-      create: h
+      where: { id: authRecord?.id || "" },
+      update: { ...h, auth: { update: { ...h.auth } } },
+      create: { ...h, auth: { create: { ...h.auth } } }
     })
     console.log(`Created hacker with id: ${created.id}`)
   }

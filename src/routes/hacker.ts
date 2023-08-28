@@ -30,19 +30,11 @@ const routes: FastifyPluginAsync = async (fastify) => {
     async function (request) {
       const filter = request.query;
       const hackers = await prisma.hacker.findMany({
-        include: {
-          auth: true,
-          howHeard: { select: { reason: true } },
-        },
+        include: { auth: true },
       });
       // Note that we don't need to explicitly remove the password field here,
       // because the AJV model does not have a "password" field; therefore will not serialize it
-      return hackers.map((hacker) => {
-        return {
-          ...hacker,
-          howHeard: hacker.howHeard.map(({ reason }) => reason), // Flatten the howHeard field
-        };
-      });
+      return hackers;
     },
   );
 
@@ -62,16 +54,11 @@ const routes: FastifyPluginAsync = async (fastify) => {
     },
   },
     async function (request) {
-      const hacker = await prisma.hacker.findFirst({
+      const hackerOrNull = await prisma.hacker.findFirst({
         where: { id: request.params.id },
-        include: { auth: true, howHeard: true },
+        include: { auth: true },
       });
-      // Flatten the howHeard field
-      let toReturn = null;
-      if (hacker) {
-        toReturn = { ...hacker, howHeard: hacker.howHeard.map(({ reason }) => reason) };
-      }
-      return toReturn;
+      return hackerOrNull;
     },
   );
 
@@ -106,12 +93,10 @@ const routes: FastifyPluginAsync = async (fastify) => {
             }
           },
         },
-        include: { howHeard: true, auth: true }
+        include: { auth: true }
       });
       // Flatten the howHeard field
-      let toReturn = null;
-      toReturn = { ...updatedHacker, howHeard: updatedHacker.howHeard.map(({ reason }) => reason) };
-      return reply.code(201).send(toReturn);
+      return reply.code(201).send(updatedHacker);
     },
   );
 
@@ -135,14 +120,10 @@ const routes: FastifyPluginAsync = async (fastify) => {
           ...request.body,
           isMinor: getAgeOfHacker(request.body.birthDate, fastify.config.HACKATHON_DATE) < 18,
           auth: { create: { email: request.body.email, role: 'HACKER' } },
-          howHeard: { create: request.body.howHeard.map(reason => ({ reason })) }
         },
-        include: { howHeard: true, auth: true }
+        include: { auth: true }
       });
-      // Flatten the howHeard field
-      let toReturn = null;
-      toReturn = { ...newHacker, howHeard: newHacker.howHeard.map(({ reason }) => reason) };
-      return reply.code(201).send(toReturn);
+      return reply.code(201).send(newHacker);
     },
   );
 };
