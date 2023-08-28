@@ -1,5 +1,41 @@
 import { Type as t } from '@sinclair/typebox';
 
+/*
+
+       d8888          888    888      
+      d88888          888    888      
+     d88P888          888    888      
+    d88P 888 888  888 888888 88888b.  
+   d88P  888 888  888 888    888 "88b 
+  d88P   888 888  888 888    888  888 
+ d8888888888 Y88b 888 Y88b.  888  888 
+d88P     888  "Y88888  "Y888 888  888 
+          
+*/
+
+export const AuthRecordBaseObject = t.Object({
+  id: t.String(),
+  email: t.String({ format: 'email', examples: ['test@email.com'] }),
+  password: t.String(),
+  emailVerified: t.Boolean(),
+  role: t.Union([t.Literal('HACKER'), t.Literal('SPONSOR'), t.Literal('JUDGE')]),
+  checkedIn: t.Boolean(),
+})
+
+export const AuthRecordReplyDto = t.Omit(AuthRecordBaseObject, ["password"])
+
+/*
+
+888    888                   888                       
+888    888                   888                       
+888    888                   888                       
+8888888888  8888b.   .d8888b 888  888  .d88b.  888d888 
+888    888     "88b d88P"    888 .88P d8P  Y8b 888P"   
+888    888 .d888888 888      888888K  88888888 888     
+888    888 888  888 Y88b.    888 "88b Y8b.     888     
+888    888 "Y888888  "Y8888P 888  888  "Y8888  888     
+                                                       
+*/
 export const HackerBaseObject = t.Object({
   id: t.String(),
   firstName: t.String({ examples: ['First'] }),
@@ -31,22 +67,14 @@ export const HackerBaseObject = t.Object({
 
 export const HackerResponseDto = t.Composite([
   HackerBaseObject,
-  t.Object({
-    auth: t.Object({
-      id: t.String(),
-      email: t.String({ format: 'email', examples: ['test@email.com'] }),
-      checkedIn: t.Boolean(),
-      role: t.Union([t.Literal('HACKER'), t.Literal('SPONSOR'), t.Literal('JUDGE')]),
-      emailVerified: t.Boolean(),
-    })
-  }),
+  t.Object({ auth: t.Omit(AuthRecordBaseObject, ["password"]) })
 ], { additionalProperties: false }); // Set additionalProperties "false" to prevent leakage of fields not defined in schema, e.g. "password"
 
 export const HackerCreateDto = t.Composite([
   t.Omit(HackerBaseObject, ['id', 'isMinor']),
   t.Object({
     email: t.String({ format: 'email', examples: ['test@email.com'] }),
-  }) // Allow an `email` field in the request body (since we only store the `email` in the AuthRecord table)
+  }) // Add an `email` field in the creation request body
 ]);
 
 export const HackerUpdateDto = t.Object({
@@ -56,3 +84,39 @@ export const HackerUpdateDto = t.Object({
   checkedIn: t.Boolean(),
   emailVerified: t.Boolean(),
 })
+
+/*
+
+  888888               888                   
+    "88b               888                   
+     888               888                   
+     888 888  888  .d88888  .d88b.   .d88b.  
+     888 888  888 d88" 888 d88P"88b d8P  Y8b 
+     888 888  888 888  888 888  888 88888888 
+     88P Y88b 888 Y88b 888 Y88b 888 Y8b.     
+     888  "Y88888  "Y88888  "Y88888  "Y8888  
+   .d88P                        888          
+ .d88P"                    Y8b d88P          
+888P"                       "Y88P"           
+*/
+
+export const JudgeBaseObject = t.Object({
+  id: t.String(),
+  name: t.String(),
+  category: t.String(),
+  company: t.String()
+})
+
+export const JudgeCreateDto = t.Composite([
+  t.Omit(JudgeBaseObject, ["id"]),
+  t.Object({
+    email: t.String({ format: "email", examples: ["judge@email.com"] })
+  }) // Add an `email` field in the creation request body
+])
+
+export const JudgeReplyDto = t.Composite([
+  JudgeBaseObject,
+  t.Object({
+    auth: t.Omit(AuthRecordBaseObject, ["password"])
+  })
+])

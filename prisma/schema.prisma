@@ -85,10 +85,11 @@ model HowHeard {
 }
 
 model Judge {
-  id      String     @id
-  auth    AuthRecord @relation(fields: [id], references: [id])
-  name    String
-  company String?
+  id       String     @id
+  auth     AuthRecord @relation(fields: [id], references: [id])
+  name     String
+  category String
+  company  String     @default("")
 
   @@index([id])
 }

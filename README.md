@@ -57,8 +57,7 @@ Check `.github/workflows/CI.yml`
 - Update hacker info: Name, email, check-in status
 
 2. Discord
-- Find soneone roles by email
-- Check-in anyone by email
+- Check-in anyone by email; return the role
 
 3. Registration page
 - Add new hacker
