@@ -96,7 +96,7 @@ model Judge {
 
 model Sponsor {
   id       String     @id
-  identity AuthRecord @relation(fields: [id], references: [id])
+  auth AuthRecord @relation(fields: [id], references: [id])
   name     String
   company  String
 

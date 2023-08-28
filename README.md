@@ -73,3 +73,6 @@ Check `.github/workflows/CI.yml`
 - Change judge info: category, name, email
 - Send email to judge: login link
 - Distribute projects to judges
+
+6. Sponsor
+- Add new sponsor
