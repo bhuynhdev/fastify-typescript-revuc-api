@@ -1,7 +1,9 @@
-import { Static as S } from '@sinclair/typebox';
+import { Static as S, Type as t } from '@sinclair/typebox';
 import { type FastifyPluginAsync } from 'fastify';
 import { prisma } from 'utils/db';
-import { JudgeCreateDto, JudgeReplyDto } from 'utils/types';
+import { JudgeCreateDto, JudgeReplyDto, JudgeUpdateDto } from 'utils/types';
+
+const ParamsWithId = t.Object({ id: t.String() });
 
 const routes: FastifyPluginAsync = async (fastify) => {
   /**
@@ -23,6 +25,30 @@ const routes: FastifyPluginAsync = async (fastify) => {
         include: { auth: true }
       });
       return reply.code(201).send(newJudge);
+    },
+  );
+
+  /**
+   * Update judge info. Currently only allow update name and category
+   */
+  fastify.patch<{ Params: S<typeof ParamsWithId>, Body: S<typeof JudgeCreateDto>, Reply: S<typeof JudgeReplyDto> }>('/:id', {
+    schema: {
+      description: "Register new judge",
+      tags: ['Judge'],
+      params: ParamsWithId,
+      body: JudgeUpdateDto,
+      response: {
+        200: JudgeReplyDto
+      }
+    },
+  },
+    async function (request, reply) {
+      const updatedJudge = await prisma.judge.update({
+        where: { id: request.params.id },
+        data: { ...request.body },
+        include: { auth: true }
+      });
+      return reply.code(201).send(updatedJudge);
     },
   );
 }

@@ -114,6 +114,11 @@ export const JudgeCreateDto = t.Composite([
   }) // Add an `email` field in the creation request body
 ])
 
+export const JudgeUpdateDto = t.Object({
+  category: t.String(),
+  name: t.String()
+})
+
 export const JudgeReplyDto = t.Composite([
   JudgeBaseObject,
   t.Object({

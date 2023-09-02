@@ -70,7 +70,7 @@ Check `.github/workflows/CI.yml`
 - Add new judge
 - Add projects CSV
 - Add/update project categories
-- Change judge info: category, name, email
+- Change judge info: category, name
 - Send email to judge: login link
 - Distribute projects to judges
 
