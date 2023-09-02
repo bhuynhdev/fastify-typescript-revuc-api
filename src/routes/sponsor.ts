@@ -7,24 +7,26 @@ const routes: FastifyPluginAsync = async (fastify) => {
   /**
    * Register new judge
    */
-  fastify.post<{ Body: S<typeof SponsorCreateDto>, Reply: S<typeof SponsorReplyDto> }>('/', {
-    schema: {
-      description: "Register new sponsor",
-      tags: ['Sponsor'],
-      body: SponsorCreateDto,
-      response: {
-        201: SponsorReplyDto
-      }
+  fastify.post<{ Body: S<typeof SponsorCreateDto>; Reply: S<typeof SponsorReplyDto> }>(
+    '/',
+    {
+      schema: {
+        description: 'Register new sponsor',
+        tags: ['Sponsor'],
+        body: SponsorCreateDto,
+        response: {
+          201: SponsorReplyDto,
+        },
+      },
     },
-  },
     async function (request, reply) {
       const newSponsor = await prisma.sponsor.create({
-        data: { ...request.body, auth: { create: { email: request.body.email, role: "SPONSOR" } } },
-        include: { auth: true }
+        data: { ...request.body, auth: { create: { email: request.body.email, role: 'SPONSOR' } } },
+        include: { auth: true },
       });
       return reply.code(201).send(newSponsor);
     },
   );
-}
+};
 
 export default routes;
