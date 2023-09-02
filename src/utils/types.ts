@@ -20,9 +20,9 @@ export const AuthRecordBaseObject = t.Object({
   emailVerified: t.Boolean(),
   role: t.Union([t.Literal('HACKER'), t.Literal('SPONSOR'), t.Literal('JUDGE')]),
   checkedIn: t.Boolean(),
-})
+});
 
-export const AuthRecordReplyDto = t.Omit(AuthRecordBaseObject, ["password"])
+export const AuthRecordReplyDto = t.Omit(AuthRecordBaseObject, ['password']);
 
 /*
 
@@ -47,7 +47,13 @@ export const HackerBaseObject = t.Object({
   country: t.String({ examples: ['USA'] }),
   major: t.String({ examples: ['Computer Science'] }),
   gender: t.Union(
-    [t.Literal('Male'), t.Literal('Female'), t.Literal('Nonbinary'), t.Literal('Other'), t.Literal('PreferNot')],
+    [
+      t.Literal('Male'),
+      t.Literal('Female'),
+      t.Literal('Nonbinary'),
+      t.Literal('Other'),
+      t.Literal('PreferNot'),
+    ],
     { examples: ['Other'] },
   ),
   ethnicities: t.String({ examples: ['Asian'] }),
@@ -62,19 +68,19 @@ export const HackerBaseObject = t.Object({
     ],
     { examples: ['XXLarge'] },
   ),
-  howHeard: t.Array(t.String(), { examples: [['2', '3']], collectionFormat: "multi" }),
+  howHeard: t.Array(t.String(), { examples: [['2', '3']], collectionFormat: 'multi' }),
 });
 
-export const HackerResponseDto = t.Composite([
-  HackerBaseObject,
-  t.Object({ auth: t.Omit(AuthRecordBaseObject, ["password"]) })
-], { additionalProperties: false }); // Set additionalProperties "false" to prevent leakage of fields not defined in schema, e.g. "password"
+export const HackerResponseDto = t.Composite(
+  [HackerBaseObject, t.Object({ auth: t.Omit(AuthRecordBaseObject, ['password']) })],
+  { additionalProperties: false },
+); // Set additionalProperties "false" to prevent leakage of fields not defined in schema, e.g. "password"
 
 export const HackerCreateDto = t.Composite([
   t.Omit(HackerBaseObject, ['id', 'isMinor']),
   t.Object({
     email: t.String({ format: 'email', examples: ['test@email.com'] }),
-  }) // Add an `email` field in the creation request body
+  }), // Add an `email` field in the creation request body
 ]);
 
 export const HackerUpdateDto = t.Object({
@@ -83,7 +89,7 @@ export const HackerUpdateDto = t.Object({
   email: t.String({ format: 'email', examples: ['test@email.com'] }),
   checkedIn: t.Boolean(),
   emailVerified: t.Boolean(),
-})
+});
 
 /*
 
@@ -104,27 +110,35 @@ export const JudgeBaseObject = t.Object({
   id: t.String(),
   name: t.String(),
   category: t.String(),
-  company: t.String()
-})
+  company: t.String(),
+});
 
 export const JudgeCreateDto = t.Composite([
-  t.Omit(JudgeBaseObject, ["id"]),
+  t.Omit(JudgeBaseObject, ['id']),
   t.Object({
-    email: t.String({ format: "email", examples: ["judge@email.com"] })
-  }) // Add an `email` field in the creation request body
-])
+    email: t.String({ format: 'email', examples: ['judge@email.com'] }),
+  }), // Add an `email` field in the creation request body
+]);
 
 export const JudgeUpdateDto = t.Object({
   category: t.String(),
-  name: t.String()
-})
+  name: t.String(),
+});
 
 export const JudgeReplyDto = t.Composite([
   JudgeBaseObject,
   t.Object({
-    auth: t.Omit(AuthRecordBaseObject, ["password"])
-  })
-])
+    auth: t.Omit(AuthRecordBaseObject, ['password']),
+  }),
+]);
+
+export const UploadProjectCsvDto = t.Object({
+  csvFile: t.String({ format: 'binary' }),
+});
+
+export const UploadProjectCsvReplyDto = t.Object({
+  count: t.Number(),
+});
 
 /*
 
@@ -144,19 +158,19 @@ Y88b  d88P 888 d88P Y88..88P 888  888      X88 Y88..88P 888
 export const SponsorBaseObject = t.Object({
   id: t.String(),
   name: t.String(),
-  company: t.String()
-})
+  company: t.String(),
+});
 
 export const SponsorCreateDto = t.Composite([
-  t.Omit(SponsorBaseObject, ["id"]),
+  t.Omit(SponsorBaseObject, ['id']),
   t.Object({
-    email: t.String({ format: "email", examples: ["sponsor@email.com"] })
-  }) // Add an `email` field in the creation request body
-])
+    email: t.String({ format: 'email', examples: ['sponsor@email.com'] }),
+  }), // Add an `email` field in the creation request body
+]);
 
 export const SponsorReplyDto = t.Composite([
   SponsorBaseObject,
   t.Object({
-    auth: t.Omit(AuthRecordBaseObject, ["password"])
-  })
-])
+    auth: t.Omit(AuthRecordBaseObject, ['password']),
+  }),
+]);
