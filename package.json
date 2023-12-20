@@ -13,7 +13,9 @@
     "dev": "tsx watch src .env | pino-pretty --colorize",
     "pretest": "npm run build",
     "test": "vitest",
-    "test:watch": "vitest -w"
+    "test:watch": "vitest -w",
+    "db:push": "pnpm drizzle-kit push:pg --config=./drizzle.config.ts",
+    "db:seed": "pnpm exec tsx drizzle/seed.ts"
   },
   "prisma": {
     "seed": "pnpm exec tsx prisma/seed.ts"
@@ -47,12 +49,13 @@
     "@tidyjs/tidy": "^2.5.2",
     "ajv": "^8.12.0",
     "bcrypt": "^5.1.1",
-    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.29.1",
     "env-schema": "^5.2.1",
     "fast-csv": "^4.3.6",
     "fastify": "^4.25.1",
     "fastify-plugin": "^3.0.1",
-    "mysql2": "^3.6.5"
+    "mysql2": "^3.6.5",
+    "postgres": "^3.4.3"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.63",
@@ -61,6 +64,8 @@
     "@types/node": "^18.17.1",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
+    "dotenv": "^16.3.1",
+    "drizzle-kit": "^0.20.6",
     "esbuild": "^0.14.54",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^8.10.0",

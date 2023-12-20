@@ -10,8 +10,9 @@
     "outDir": "build",
     "baseUrl": "src",
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "noErrorTruncation": true
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts", "drizzle.config.ts"],
   "exclude": ["node_modules"]
 }

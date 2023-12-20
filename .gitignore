@@ -9,7 +9,7 @@
 # misc
 .DS_Store
 .env
-.env.production
+.env.*
 
 # debug
 npm-debug.log*
