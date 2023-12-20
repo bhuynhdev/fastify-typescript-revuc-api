@@ -2,7 +2,7 @@ import { Static as S, Type as t } from '@sinclair/typebox'
 import { type FastifyPluginAsync } from 'fastify'
 // import { prisma } from 'utils/db'
 import { db } from 'drizzle/db'
-import { IdentityRecordResponseDto } from 'utils/types'
+import { HttpError, IdentityRecordResponseDto } from 'utils/types'
 import { identity } from 'drizzle/schema'
 import { eq } from 'drizzle-orm'
 
@@ -13,7 +13,7 @@ const checkInDto = t.Object({
 const routes: FastifyPluginAsync = async (fastify) => {
 	fastify.post<{
 		Body: S<typeof checkInDto>
-		Reply: { 200: S<typeof IdentityRecordResponseDto>; 404: Record<string, never> }
+		Reply: { 200: S<typeof IdentityRecordResponseDto>; 404: { message: string } }
 	}>(
 		'/checkin',
 		{
@@ -23,7 +23,7 @@ const routes: FastifyPluginAsync = async (fastify) => {
 				body: checkInDto,
 				response: {
 					200: IdentityRecordResponseDto,
-					404: {}
+					404: HttpError.NotFound('Email not found'),
 				},
 			},
 		},
@@ -35,7 +35,7 @@ const routes: FastifyPluginAsync = async (fastify) => {
 				.returning()
 
 			if (!person) {
-				return reply.status(404).send()
+				return reply.status(404).send({ message: 'Email not found' })
 			}
 			return reply.status(200).send(person)
 		},

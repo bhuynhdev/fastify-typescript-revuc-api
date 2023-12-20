@@ -5,15 +5,16 @@ import {
 	ObjectOptions,
 	SchemaOptions,
 	StringOptions,
-	Type as t,
 	TArray,
 	TInteger,
 	TIntersect,
 	TNumber,
 	TObject,
+	TOptional,
 	TPartial,
 	TSchema,
 	TString,
+	Type as t,
 } from '@sinclair/typebox'
 import { createInsertSchema, createSelectSchema } from 'drizzle-typebox'
 import { hacker, identity, judge, sponsor } from '../drizzle/schema'
@@ -54,11 +55,14 @@ export const IdentityRecordSchema = createSelectSchema(identity, {
 
 export const IdentityRecordResponseDto = t.Omit(IdentityRecordSchema, ['password'])
 
-function WithIdentity(schema: TObject) {
+function WithIdentity<T extends TObject>(schema: T) {
 	// Set additionalProperties "false" to prevent leakage of fields not defined in schema, e.g. "password"
 	return t.Composite([schema, t.Object({ identity: IdentityRecordResponseDto })], { additionalProperties: false })
 }
 
+function WithoutIds<T extends TObject<{ id: TOptional<TString>; identityId: TString }>>(schema: T) {
+	return t.Omit(schema, ['id', 'identityId'])
+}
 /*
 
 888    888                   888                       
@@ -100,14 +104,18 @@ function WithIdentity(schema: TObject) {
 // 	howHeard: t.Array(t.String(), { examples: [['2', '3']], collectionFormat: 'multi' }),
 // })
 
-const HackerSchema = createSelectSchema(hacker)
+const HackerSchema = createSelectSchema(hacker, {
+	// Manually convert to Array since Drizzle doesn't product correct Array type: https://github.com/drizzle-team/drizzle-orm/issues/1110
+	howHeard: t.Array(t.String()),
+	ethnicities: t.Array(t.String()),
+})
 
 export const HackerResponseDto = WithIdentity(HackerSchema)
 
 export const HackerCreateDto = t.Composite([
-	createInsertSchema(hacker),
+	WithoutIds(createInsertSchema(hacker, { howHeard: t.Array(t.String()), ethnicities: t.Array(t.String()) })),
 	t.Object({
-		email: t.String({ format: 'email', examples: ['test@email.com'] }),
+		email: t.String({ format: 'email' }),
 	}), // Add an `email` field in the creation request body
 ])
 
@@ -139,9 +147,9 @@ export const HackerUpdateDto = HackerCreateDto
 export const JudgeBaseObject = createSelectSchema(judge)
 
 export const JudgeCreateDto = t.Composite([
-	createInsertSchema(judge),
+	WithoutIds(createInsertSchema(judge)),
 	t.Object({
-		email: t.String({ format: 'email', examples: ['judge@email.com'] }),
+		email: t.String({ format: 'email' }),
 	}), // Add an `email` field in the creation request body
 ])
 
@@ -178,10 +186,15 @@ Y88b  d88P 888 d88P Y88..88P 888  888      X88 Y88..88P 888
 export const SponsorBaseObject = createSelectSchema(sponsor)
 
 export const SponsorCreateDto = t.Composite([
-	createInsertSchema(sponsor),
+	WithoutIds(createInsertSchema(sponsor)),
 	t.Object({
-		email: t.String({ format: 'email', examples: ['sponsor@email.com'] }),
+		email: t.String({ format: 'email' }),
 	}), // Add an `email` field in the creation request body
 ])
 
 export const SponsorReplyDto = WithIdentity(SponsorBaseObject)
+
+export const HttpError = {
+	NotFound: (message = 'Not found') => t.Object({ message: t.String({ examples: [message] }) }),
+	Conflict: (message = 'Conflict') => t.Object({ message: t.String({ examples: [message] }) }),
+}

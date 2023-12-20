@@ -16,19 +16,21 @@ export const identity = pgTable('indentity_record', {
 
 export const hacker = pgTable('hacker', {
 	id: uuid('id').primaryKey().default(sql`gen_random_uuid()`), // prettier-ignore
-	identityId: uuid('identity_id').references(() => identity.id, { onDelete: 'cascade' }),
+	identityId: uuid('identity_id')
+		.references(() => identity.id, { onDelete: 'cascade' })
+		.notNull(),
 	firstName: text('first_name').notNull(),
 	lastName: text('lastName').notNull(),
 	phone: varchar('phone', { length: 20 }).notNull(),
-	birthDate: varchar('birth_date', { length: 20 }).notNull(),
+	birthDate: varchar('birth_date', { length: 255 }).notNull(),
 	isMinor: boolean('is_minor').default(false).notNull(),
 	country: varchar('country', { length: 255 }).notNull(),
 	school: text('school').notNull(),
 	major: text('major').notNull(),
-	howHeard: text('how_heard').array().default('{}' as unknown as []), // prettier-ignore
+	howHeard: text('how_heard').array().default('{}' as unknown as []).notNull(), // prettier-ignore
 	gender: genderEnum('gender').notNull(),
-	shirtSize: shirtSizeEnum('shirt_size'),
-	ethnicities: varchar('ethnicities', { length: 255 }).array(),
+	shirtSize: shirtSizeEnum('shirt_size').notNull(),
+	ethnicities: varchar('ethnicities', { length: 255 }).array().default('{}' as unknown as []).notNull(), // prettier-ignore
 })
 
 export const hackerRelations = relations(hacker, ({ one }) => ({
@@ -37,7 +39,9 @@ export const hackerRelations = relations(hacker, ({ one }) => ({
 
 export const judge = pgTable('judge', {
 	id: uuid('id').primaryKey().default(sql`gen_random_uuid()`), // prettier-ignore
-	identityId: uuid('identity_id').references(() => identity.id),
+	identityId: uuid('identity_id')
+		.references(() => identity.id)
+		.notNull(),
 	name: text('name').notNull(),
 	category: text('category'),
 	company: text('company'),
@@ -49,7 +53,9 @@ export const judgeRelations = relations(judge, ({ one }) => ({
 
 export const sponsor = pgTable('sponsor', {
 	id: uuid('id').primaryKey().default(sql`gen_random_uuid()`), // prettier-ignore
-	identityId: uuid('identity_id').references(() => identity.id),
+	identityId: uuid('identity_id')
+		.references(() => identity.id)
+		.notNull(),
 	name: text('name').notNull(),
 	company: text('company').notNull(),
 })

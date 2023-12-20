@@ -4,7 +4,7 @@
  * Default hackathon date is 02/23/2024
  * @param hackerBirthDate string Birthdate of hacker in string
  */
-export function getAgeOfHacker(hackerBirthDate: string, hackathonDate = '02/23/2024'): number {
+export function getAgeOfHacker(hackerBirthDate: string, hackathonDate = '2024-02-25'): number {
   // Credit: https://stackoverflow.com/a/10008175/14426823
   const birthDateEpochMs = new Date(hackerBirthDate).valueOf();
   const hackathonDateEpochMs = new Date(hackathonDate).valueOf();

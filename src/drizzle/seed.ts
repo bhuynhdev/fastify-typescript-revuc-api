@@ -33,7 +33,7 @@ async function seedAdmin() {
 }
 
 async function seedHackers() {
-	type HackerSeed = HackerInsertInput & { identity: Omit<Identity, 'id' | 'password'> }
+	type HackerSeed = Omit<HackerInsertInput, 'identityId'> & { identity: Omit<Identity, 'id' | 'password'> }
 	const hackerSeeds: HackerSeed[] = [
 		{
 			birthDate: '01/01/1980',

@@ -2,7 +2,7 @@ import * as schema from './schema'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 
-let db: ReturnType<typeof drizzle>
+let db: ReturnType<typeof drizzle<typeof schema>>
 
 declare global {
   // eslint-disable-next-line no-var
